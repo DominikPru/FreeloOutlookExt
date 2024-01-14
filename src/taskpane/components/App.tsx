@@ -4,6 +4,7 @@ import Projects from "./Projects";
 import Tasklists from "./Tasklists";
 import Tasks from "./Tasks";
 import axios, { AxiosResponse } from "axios";
+import { error } from "console";
 
 const App = () => {
   const [page, setPage] = React.useState<string>("login");
@@ -211,12 +212,8 @@ const App = () => {
           },
         }
       );
-      // worker: {
-      //   id: JSON.parse(worker).id,
-      //   fullname: JSON.parse(worker).fullname,
-      // },
-      console.log("New task created", response.data);
-      setErrorMsg("");
+      console.log("Response data:", response.data);
+      setErrorMsg("Task created succesfully");
     } catch (error) {
       console.error("New task failed", error.message);
       console.log("https://api.freelo.io/v1/project/" + selectedProject.id + "/tasklist/" + selectedList.id + "/tasks");
