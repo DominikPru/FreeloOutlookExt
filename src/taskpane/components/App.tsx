@@ -200,10 +200,6 @@ const App = () => {
             content: taskDescription,
           },
           due_date: taskDeadline,
-          // worker: {
-          //   id: JSON.parse(worker).id,
-          //   fullname: JSON.parse(worker).fullname,
-          // },
         },
         {
           auth: {
@@ -215,6 +211,10 @@ const App = () => {
           },
         }
       );
+      // worker: {
+      //   id: JSON.parse(worker).id,
+      //   fullname: JSON.parse(worker).fullname,
+      // },
       console.log("New task created", response.data);
       setErrorMsg("");
     } catch (error) {
