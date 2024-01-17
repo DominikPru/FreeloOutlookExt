@@ -15,34 +15,34 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
 
   const handleNewTask = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onNewTask(emailSubject, emailBody, deadlineDate + "T" + deadlineTime + ":00+02:00", worker);
+    onNewTask(emailSubject, emailBody, deadlineDate + "T" + deadlineTime + ":00+01:00", worker);
   };
 
   // This useEffect sets the email subject and content to its corresponding fields (Name, Desc)
-  useEffect(() => {
-    const emailItem = Office.context.mailbox.item;
+  // useEffect(() => {
+  //   const emailItem = Office.context.mailbox.item;
 
-    if (emailItem.itemId) {
-      setEmailSubject(emailItem.subject);
-    } else {
-      emailItem.subject.getAsync((result: Office.AsyncResult<string>) => {
-        if (result.status === Office.AsyncResultStatus.Succeeded) {
-          setEmailSubject(result.value);
-        } else {
-          console.error(result.error);
-        }
-      });
-    }
+  //   if (emailItem.itemId) {
+  //     setEmailSubject(emailItem.subject);
+  //   } else {
+  //     emailItem.subject.getAsync((result: Office.AsyncResult<string>) => {
+  //       if (result.status === Office.AsyncResultStatus.Succeeded) {
+  //         setEmailSubject(result.value);
+  //       } else {
+  //         console.error(result.error);
+  //       }
+  //     });
+  //   }
 
-    emailItem.body.getAsync("text", (result: Office.AsyncResult<string>) => {
-      if (result.status === Office.AsyncResultStatus.Succeeded) {
-        const body = result.value;
-        setEmailBody(body);
-      } else {
-        console.error(result.error);
-      }
-    });
-  }, []);
+  //   emailItem.body.getAsync("text", (result: Office.AsyncResult<string>) => {
+  //     if (result.status === Office.AsyncResultStatus.Succeeded) {
+  //       const body = result.value;
+  //       setEmailBody(body);
+  //     } else {
+  //       console.error(result.error);
+  //     }
+  //   });
+  // }, []);
 
   return (
     <div>

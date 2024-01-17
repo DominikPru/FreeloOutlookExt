@@ -4,7 +4,6 @@ import Projects from "./Projects";
 import Tasklists from "./Tasklists";
 import Tasks from "./Tasks";
 import axios, { AxiosResponse } from "axios";
-import { error } from "console";
 
 const App = () => {
   const [page, setPage] = React.useState<string>("login");
@@ -139,6 +138,7 @@ const App = () => {
       setErrorMsg(error.message);
     }
   };
+
   const handleNewList = async (listName: string, listBudget: number) => {
     try {
       if (!listName || !selectedProject) return;
