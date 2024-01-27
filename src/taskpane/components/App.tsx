@@ -20,6 +20,13 @@ const App = () => {
     setSelectedList(null);
   }, [selectedProject]);
 
+  //Gets the assignable users for the selected list / project
+  React.useEffect(() => {
+    if (page === "tasks" && selectedProject && selectedList) {
+      getUserData(email, apiKey);
+    }
+  }, [page]);
+
   //Handle Change functions set selected projects, lists and pages
   const handleProjectChange = (selectedProject: any) => {
     setSelectedProject(selectedProject);
@@ -46,7 +53,6 @@ const App = () => {
     setApiKey(apiKey);
     setEmail(email);
     await getProjectData(email, apiKey);
-    await getUserData(email, apiKey);
   };
 
   //Get functions call the freelo API and get all the required data (Current projects, tasklists, workers)
@@ -64,12 +70,12 @@ const App = () => {
           },
         }
       );
-
       console.log("Login successful", response.data);
       setProjectData(response.data);
       setEmail(email);
       setApiKey(apiKey);
-
+      setPage("projects");
+      setErrorMsg("");
       return response.data;
     } catch (error) {
       console.error("Login failed", error.message);
@@ -81,7 +87,14 @@ const App = () => {
   const getUserData = async (email: string, apiKey: string) => {
     try {
       const response: AxiosResponse = await axios.get(
-        "https://corsproxy.io/?" + encodeURIComponent("https://api.freelo.io/v1/users"),
+        "https://corsproxy.io/?" +
+          encodeURIComponent(
+            "https://api.freelo.io/v1/project/" +
+              selectedProject.id +
+              "/tasklist/" +
+              selectedList.id +
+              "/assignable-workers"
+          ),
         {
           auth: {
             username: email,
@@ -92,11 +105,12 @@ const App = () => {
           },
         }
       );
-      setUserData(response.data.data.users);
-      console.log(response.data.data.users);
+      console.log("Geting data");
+      setUserData(response.data);
+      console.log(response.data);
       setErrorMsg("");
-      setPage("projects");
     } catch (error) {
+      console.log(error.message);
       setErrorMsg(error.message);
     }
   };
@@ -148,10 +162,7 @@ const App = () => {
           encodeURIComponent("https://api.freelo.io/v1/project/" + selectedProject.id + "/tasklists"),
         {
           name: listName,
-          budget: {
-            amount: listBudget,
-            currency: selectedProject.cost.currency,
-          },
+          budget: listBudget * 100,
         },
         {
           auth: {
@@ -179,17 +190,6 @@ const App = () => {
   const handleNewTask = async (taskName: string, taskDescription: string, taskDeadline: string, worker: string) => {
     try {
       if (!selectedProject || !selectedList) return;
-      console.log("Creating new task", {
-        name: taskName,
-        comment: {
-          content: taskDescription,
-        },
-        due_date: taskDeadline,
-        worker: {
-          id: JSON.parse(worker).id,
-          fullname: JSON.parse(worker).fullname,
-        },
-      });
       const response: AxiosResponse = await axios.post(
         "https://corsproxy.io/?" +
           encodeURIComponent(
@@ -201,6 +201,7 @@ const App = () => {
             content: taskDescription,
           },
           due_date: taskDeadline,
+          worker: JSON.parse(worker).id,
         },
         {
           auth: {
@@ -259,7 +260,11 @@ const App = () => {
               selectedList={selectedList}
               onNewList={handleNewList}
             />
-            <Tasks userData={userData} onNewTask={handleNewTask} errorMsg={errorMsg} />
+            {userData ? (
+              <Tasks userData={userData} onNewTask={handleNewTask} errorMsg={errorMsg} />
+            ) : (
+              <div className="flex justify-center w-full">Loading...</div>
+            )}
           </div>
         );
       default:

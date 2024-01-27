@@ -81,7 +81,7 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
             <option value="" hidden>
               Řešitel
             </option>
-            {userData.map((user, index) => (
+            {userData?.map((user, index) => (
               <option key={index} value={JSON.stringify({ id: user.id, fullname: user.fullname })}>
                 {user.fullname}
               </option>
