@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { LanguageContext } from "../languagecontext";
 
 interface Props {
   taskLists: any[];
@@ -11,6 +12,7 @@ interface Props {
 const Tasklists: React.FC<Props> = ({ taskLists, onListChange, selectedList, onNewList, errorMsg }) => {
   const [newListName, setNewListName] = useState<string>("");
   const [newListBudget, setNewListBudget] = useState<number>();
+  const { language } = useContext(LanguageContext);
 
   const handleListChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedIndex = event.target.selectedIndex;
@@ -31,7 +33,7 @@ const Tasklists: React.FC<Props> = ({ taskLists, onListChange, selectedList, onN
           onChange={handleListChange}
           className="w-full border-b-2 border-gray-300 px-1 py-2 my-1 text-gray-600 focus:outline-none"
         >
-          <option value="">Vyberte/Vytvořte To-Do list</option>
+          <option value="">{language.chooseTasklistText}</option>
           {Array.isArray(taskLists) &&
             taskLists.map((list, index) => (
               <option key={index} value={list.name}>
@@ -45,23 +47,23 @@ const Tasklists: React.FC<Props> = ({ taskLists, onListChange, selectedList, onN
         <div>
           <hr />
           <div className="flex justify-center flex-col w-full text-center px-10">
-            <h1 className="text-lg my-3">Nový To-Do list</h1>
+            <h1 className="text-lg my-3">{language.newTasklistLabel}</h1>
             {errorMsg && <p className="text-red-500">{errorMsg}</p>}
             <form onSubmit={handleNewList}>
               <input
                 type="text"
-                placeholder="Název To-Do listu"
+                placeholder={language.tasklistName}
                 className="w-full border-b-2 border-gray-300 px-1 py-2 my-1 focus:outline-none placeholder-gray-600"
                 onChange={(e) => setNewListName(e.target.value)}
               />
               <input
                 type="number"
-                placeholder="Rozpočet To-Do listu"
+                placeholder={language.tasklistBudget}
                 className="w-full border-b-2 border-gray-300 px-1 py-2 my-1 focus:outline-none placeholder-gray-600"
                 onChange={(e) => setNewListBudget(Number(e.target.value))}
               />
               <button type="submit" className="w-full my-2 rounded text-white p-2 bg-blue-500">
-                Vytvořit
+                {language.createTasklistText}
               </button>
             </form>
           </div>

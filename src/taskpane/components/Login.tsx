@@ -1,4 +1,5 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useContext } from "react";
+import { LanguageContext } from "../languagecontext";
 
 interface LoginProps {
   onLoginSuccess: (email: string, apiKey: string) => void;
@@ -8,6 +9,7 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ onLoginSuccess, errorMsg }) => {
   const [email, setEmail] = useState<string>("");
   const [apiKey, setApiKey] = useState<string>("");
+  const { language } = useContext(LanguageContext);
 
   const handleLogin = (event: FormEvent) => {
     event.preventDefault();
@@ -23,7 +25,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, errorMsg }) => {
           rel="noopener noreferrer"
           className="text-xs text-gray underline"
         >
-          Neznáte svůj API klíč?
+          {language.apiKeyLink}
         </a>
 
         <form onSubmit={handleLogin} className="px-10 my-2">
@@ -36,13 +38,13 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, errorMsg }) => {
           />
           <input
             type="password"
-            placeholder="API klíč"
+            placeholder={language.apiKeyText}
             className="w-full border-b-2 border-gray-300 px-1 py-2 focus:outline-none"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
           />
           <button type="submit" className="w-full my-2 rounded text-white p-2 bg-blue-500">
-            Přihlásit
+            {language.loginText}
           </button>
           {errorMsg && <p className="text-red-500">{errorMsg}</p>}
         </form>

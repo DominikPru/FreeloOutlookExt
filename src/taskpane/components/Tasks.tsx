@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { LanguageContext } from "../languagecontext";
 
 interface Props {
   userData: any[];
@@ -12,6 +13,7 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
   const [deadlineDate, setDeadlineDate] = useState("");
   const [deadlineTime, setDeadlineTime] = useState("");
   const [worker, setWorker] = useState("");
+  const { language } = useContext(LanguageContext);
 
   const handleNewTask = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -19,40 +21,40 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
   };
 
   // This useEffect sets the email subject and content to its corresponding fields (Name, Desc)
-  // useEffect(() => {
-  //   const emailItem = Office.context.mailbox.item;
+  useEffect(() => {
+    const emailItem = Office.context.mailbox.item;
 
-  //   if (emailItem.itemId) {
-  //     setEmailSubject(emailItem.subject);
-  //   } else {
-  //     emailItem.subject.getAsync((result: Office.AsyncResult<string>) => {
-  //       if (result.status === Office.AsyncResultStatus.Succeeded) {
-  //         setEmailSubject(result.value);
-  //       } else {
-  //         console.error(result.error);
-  //       }
-  //     });
-  //   }
+    if (emailItem.itemId) {
+      setEmailSubject(emailItem.subject);
+    } else {
+      emailItem.subject.getAsync((result: Office.AsyncResult<string>) => {
+        if (result.status === Office.AsyncResultStatus.Succeeded) {
+          setEmailSubject(result.value);
+        } else {
+          console.error(result.error);
+        }
+      });
+    }
 
-  //   emailItem.body.getAsync("text", (result: Office.AsyncResult<string>) => {
-  //     if (result.status === Office.AsyncResultStatus.Succeeded) {
-  //       const body = result.value;
-  //       setEmailBody(body);
-  //     } else {
-  //       console.error(result.error);
-  //     }
-  //   });
-  // }, []);
+    emailItem.body.getAsync("text", (result: Office.AsyncResult<string>) => {
+      if (result.status === Office.AsyncResultStatus.Succeeded) {
+        const body = result.value;
+        setEmailBody(body);
+      } else {
+        console.error(result.error);
+      }
+    });
+  }, []);
 
   return (
     <div>
       <hr />
       <form onSubmit={handleNewTask}>
         <div className="flex justify-center flex-col w-full text-center px-10 mb-3">
-          <h1 className="text-lg my-3">Nový úkol</h1>
+          <h1 className="text-lg my-3">{language.newTaskLabel}</h1>
           {errorMsg && <p className="text-red-500">{errorMsg}</p>}
           <label>
-            <span className="mb-3">Termín</span>
+            <span className="mb-3">{language.dueTimeText}</span>
             <input
               type="date"
               className="w-full border-b-2 border-gray-300 px-1 py-2 mb-2 focus:outline-none placeholder-gray-600"
@@ -69,7 +71,7 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
         <div className="flex justify-center flex-col w-full text-center px-10">
           <input
             type="text"
-            placeholder="Název úkolu"
+            placeholder={language.taskName}
             value={emailSubject}
             onChange={(e) => setEmailSubject(e.target.value)}
             className="w-full border-b-2 border-gray-300 px-1 py-2 my-1 focus:outline-none placeholder-gray-600"
@@ -79,7 +81,7 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
             onChange={(e) => setWorker(e.target.value)}
           >
             <option value="" hidden>
-              Řešitel
+              {language.workerText}
             </option>
             {userData?.map((user, index) => (
               <option key={index} value={JSON.stringify({ id: user.id, fullname: user.fullname })}>
@@ -88,13 +90,13 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
             ))}
           </select>
           <textarea
-            placeholder="Popis úkolu"
+            placeholder={language.taskText}
             value={emailBody}
             onChange={(e) => setEmailBody(e.target.value)}
             className="w-full border-2 border-gray-300 px-1 p-2 my-1 focus:outline-none placeholder-gray-600 rounded overflow-x-hidden"
           />
           <button type="submit" className="w-full my-2 rounded text-white p-2 bg-blue-500">
-            Vytvořit
+            {language.createTaskText}
           </button>
         </div>
       </form>
