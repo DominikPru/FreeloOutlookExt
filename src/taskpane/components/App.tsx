@@ -282,6 +282,66 @@ const App = () => {
     }
   };
 
+  const handleFileUpload = async (
+    attachments: any[],
+    taskName: string,
+    taskDescription: string,
+    taskDeadline: string,
+    worker: string
+  ) => {
+    try {
+      let files = [];
+      for (const attachment of attachments) {
+        const fileContent = await new Promise<string>((resolve, reject) => {
+          Office.context.mailbox.item.getAttachmentContentAsync(
+            attachment.id,
+            { asyncContext: null },
+            (asyncResult) => {
+              if (asyncResult.status === Office.AsyncResultStatus.Succeeded) {
+                resolve(asyncResult.value.content);
+              } else {
+                reject(new Error("Failed to get attachment content"));
+              }
+            }
+          );
+        });
+
+        const byteCharacters = atob(fileContent);
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray]);
+        const formData = new FormData();
+        formData.append("file", blob); // Add your file to the form data
+
+        const response: AxiosResponse = await axios.post(
+          "https://api.freelo.io/v1/file/upload",
+          formData, // Send the form data
+          {
+            auth: {
+              username: email,
+              password: apiKey,
+            },
+            headers: {
+              "User-Agent": "Freelo Outlook Add-in",
+            },
+          }
+        );
+        files.push({ uuid: response.data.uuid, name: attachment.name });
+      }
+      for (const file of files) {
+        taskDescription += "<a data-freelo-uuid=" + file.uuid + ">" + file.name + "</a>";
+      }
+      handleNewTask(taskName, taskDescription, taskDeadline, worker);
+    } catch (error) {
+      setErrorMsg(error.message);
+    }
+  };
+
   //The pagination and htmx rendering are done here
   const renderPage = () => {
     switch (page) {
@@ -338,7 +398,7 @@ const App = () => {
               onNewList={handleNewList}
             />
             {userData ? (
-              <Tasks userData={userData} onNewTask={handleNewTask} errorMsg={errorMsg} />
+              <Tasks userData={userData} onNewTask={handleFileUpload} errorMsg={errorMsg} />
             ) : (
               <div className="flex justify-center w-full">Loading...</div>
             )}
@@ -353,6 +413,12 @@ const App = () => {
                 setPage("tasks");
               }}
             />
+          </LanguageContext.Provider>
+        );
+      case "loading":
+        return (
+          <LanguageContext.Provider value={{ language, setLanguage }}>
+            <div className="flex justify-center w-full">Loading...</div>
           </LanguageContext.Provider>
         );
       default:

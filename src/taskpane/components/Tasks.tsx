@@ -3,7 +3,7 @@ import { LanguageContext } from "../languagecontext";
 
 interface Props {
   userData: any[];
-  onNewTask: (taskName: string, taskDescription: string, taskDeadline: any, worker: any) => void;
+  onNewTask: (attachments: any, taskName: string, taskDescription: string, taskDeadline: any, worker: any) => void;
   errorMsg?: string;
 }
 
@@ -13,16 +13,20 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
   const [deadlineDate, setDeadlineDate] = useState("");
   const [deadlineTime, setDeadlineTime] = useState("");
   const [worker, setWorker] = useState("");
+  const [attachments, setAttachments] = useState([]);
   const { language } = useContext(LanguageContext);
 
   const handleNewTask = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onNewTask(emailSubject, emailBody, deadlineDate + "T" + deadlineTime + ":00+01:00", worker);
+    onNewTask(attachments, emailSubject, emailBody, deadlineDate + "T" + deadlineTime + ":00+01:00", worker);
   };
 
-  // This useEffect sets the email subject and content to its corresponding fields (Name, Desc)
+  // This useEffect sets the email subject and content to its corresponding fields (Name, Desc), and gets the email attachments
   useEffect(() => {
     const emailItem = Office.context.mailbox.item;
+
+    const emailAttachments = emailItem.attachments;
+    setAttachments(emailAttachments);
 
     if (emailItem.itemId) {
       setEmailSubject(emailItem.subject);
@@ -98,6 +102,12 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
           <button type="submit" className="w-full my-2 rounded text-white p-2 bg-blue-500">
             {language.createTaskText}
           </button>
+          <div>
+            <h2>Attachments:</h2>
+            {attachments.map((attachment, index) => (
+              <p key={index}>{attachment.name}</p>
+            ))}
+          </div>
         </div>
       </form>
     </div>
