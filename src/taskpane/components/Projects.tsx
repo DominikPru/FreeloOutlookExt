@@ -37,6 +37,7 @@ const Projects: React.FC<Props> = ({ projects, onProjectChange, selectedProject,
           value={selectedProject?.name}
           onChange={handleProjectChange}
           className="w-full border-b-2 border-gray-300 px-1 py-2 my-1 text-gray-600 focus:outline-none"
+          required
         >
           <option value="">{language.chooseProjectText}</option>
           {projects?.map((project, index) => (
@@ -58,10 +59,12 @@ const Projects: React.FC<Props> = ({ projects, onProjectChange, selectedProject,
                 placeholder={language.projectName}
                 className="w-full border-b-2 border-gray-300 px-1 py-2 my-1 focus:outline-none placeholder-gray-600"
                 onChange={(e) => setNewProjectName(e.target.value)}
+                required
               />
               <select
                 className="w-full border-b-2 border-gray-300 px-1 py-2 my-1 text-gray-600 focus:outline-none"
                 onChange={(e) => setNewProjectCurrency(e.target.value)}
+                required
               >
                 <option value="CZK">CZK</option>
                 <option value="EUR">EUR</option>

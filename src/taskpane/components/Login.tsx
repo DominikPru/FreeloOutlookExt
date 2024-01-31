@@ -35,6 +35,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, errorMsg }) => {
             className="w-full border-b-2 border-gray-300 px-1 py-2 my-1 focus:outline-none"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <input
             type="password"
@@ -42,6 +43,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess, errorMsg }) => {
             className="w-full border-b-2 border-gray-300 px-1 py-2 focus:outline-none"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
+            required
           />
           <button type="submit" className="w-full my-2 rounded text-white p-2 bg-blue-500">
             {language.loginText}
