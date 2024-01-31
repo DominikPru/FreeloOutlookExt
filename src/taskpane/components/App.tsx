@@ -117,19 +117,15 @@ const App = () => {
   //Get functions call the freelo API and get all the required data (Current projects, tasklists, workers)
   const getProjectData = async (email, apiKey) => {
     try {
-      const response = await axios.get(
-        "https://corsproxy.io/?" + encodeURIComponent("https://api.freelo.io/v1/projects"),
-        {
-          auth: {
-            username: email,
-            password: apiKey,
-          },
-          headers: {
-            "User-Agent": "Freelo Outlook Add-in",
-          },
-        }
-      );
-      console.log("Login successful", response.data);
+      const response = await axios.get("https://api.freelo.io/v1/projects", {
+        auth: {
+          username: email,
+          password: apiKey,
+        },
+        headers: {
+          "User-Agent": "Freelo Outlook Add-in",
+        },
+      });
       setProjectData(response.data);
       setEmail(email);
       setApiKey(apiKey);
@@ -146,14 +142,11 @@ const App = () => {
   const getUserData = async (email: string, apiKey: string) => {
     try {
       const response: AxiosResponse = await axios.get(
-        "https://corsproxy.io/?" +
-          encodeURIComponent(
-            "https://api.freelo.io/v1/project/" +
-              selectedProject.id +
-              "/tasklist/" +
-              selectedList.id +
-              "/assignable-workers"
-          ),
+        "https://api.freelo.io/v1/project/" +
+          selectedProject.id +
+          "/tasklist/" +
+          selectedList.id +
+          "/assignable-workers",
         {
           auth: {
             username: email,
@@ -164,12 +157,9 @@ const App = () => {
           },
         }
       );
-      console.log("Geting data");
       setUserData(response.data);
-      console.log(response.data);
       setErrorMsg("");
     } catch (error) {
-      console.log(error.message);
       setErrorMsg(error.message);
     }
   };
@@ -179,7 +169,7 @@ const App = () => {
     try {
       console.log("Creating new project", projectName, projectCurrency);
       const response = await axios.post(
-        "https://corsproxy.io/?" + encodeURIComponent("https://api.freelo.io/v1/projects"),
+        "https://api.freelo.io/v1/projects",
         {
           name: projectName,
           currency_iso: projectCurrency,
@@ -203,11 +193,9 @@ const App = () => {
         handleProjectChange(newProject);
         setErrorMsg("");
       } else {
-        console.error("New project not found in updated project data");
         setErrorMsg("New project not found in updated project data");
       }
     } catch (error) {
-      console.error("New project failed", error.message);
       setErrorMsg(error.message);
     }
   };
@@ -217,8 +205,7 @@ const App = () => {
       if (!listName || !selectedProject) return;
 
       const response: AxiosResponse = await axios.post(
-        "https://corsproxy.io/?" +
-          encodeURIComponent("https://api.freelo.io/v1/project/" + selectedProject.id + "/tasklists"),
+        "https://api.freelo.io/v1/project/" + selectedProject.id + "/tasklists",
         {
           name: listName,
           budget: listBudget * 100,
@@ -250,10 +237,7 @@ const App = () => {
     try {
       if (!selectedProject || !selectedList) return;
       const response: AxiosResponse = await axios.post(
-        "https://corsproxy.io/?" +
-          encodeURIComponent(
-            "https://api.freelo.io/v1/project/" + selectedProject.id + "/tasklist/" + selectedList.id + "/tasks"
-          ),
+        "https://api.freelo.io/v1/project/" + selectedProject.id + "/tasklist/" + selectedList.id + "/tasks",
         {
           name: taskName,
           comment: {
@@ -272,12 +256,9 @@ const App = () => {
           },
         }
       );
-      console.log("Response data:", response.data);
       setSelectedTask(response.data.id);
       setPage("taskCreated");
     } catch (error) {
-      console.error("New task failed", error.message);
-      console.log("https://api.freelo.io/v1/project/" + selectedProject.id + "/tasklist/" + selectedList.id + "/tasks");
       setErrorMsg(error.message);
     }
   };
