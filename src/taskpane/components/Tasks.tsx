@@ -102,12 +102,23 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
           <button type="submit" className="w-full my-2 rounded text-white p-2 bg-blue-500">
             {language.createTaskText}
           </button>
-          <div>
-            <h2>Attachments:</h2>
-            {attachments.map((attachment, index) => (
-              <p key={index}>{attachment.name}</p>
-            ))}
-          </div>
+          {attachments.map((attachment, index) => (
+            <div className="flex justify-start w-full text-start flex-col overflow-hidden p-2 border-gray-300 border-2 rounded drop-shadow my-2">
+              <div key={index} className="whitespace-nowrap flex justify-between w-full">
+                {attachment.name.length > 28 ? attachment.name.substring(0, 28) + "..." : attachment.name}
+                <span
+                  className="ml-1 cursor-pointer"
+                  onClick={() => {
+                    const newAttachments = [...attachments];
+                    newAttachments.splice(index, 1);
+                    setAttachments(newAttachments);
+                  }}
+                >
+                  ❌
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </form>
     </div>
