@@ -316,21 +316,17 @@ const App = () => {
         const byteArray = new Uint8Array(byteNumbers);
         const blob = new Blob([byteArray]);
         const formData = new FormData();
-        formData.append("file", blob); // Add your file to the form data
+        formData.append("file", blob);
 
-        const response: AxiosResponse = await axios.post(
-          "https://api.freelo.io/v1/file/upload",
-          formData, // Send the form data
-          {
-            auth: {
-              username: email,
-              password: apiKey,
-            },
-            headers: {
-              "User-Agent": "Freelo Outlook Add-in",
-            },
-          }
-        );
+        const response: AxiosResponse = await axios.post("https://api.freelo.io/v1/file/upload", formData, {
+          auth: {
+            username: email,
+            password: apiKey,
+          },
+          headers: {
+            "User-Agent": "Freelo Outlook Add-in",
+          },
+        });
         files.push({ uuid: response.data.uuid, name: attachment.name });
       }
       for (const file of files) {

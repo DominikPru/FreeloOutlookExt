@@ -103,8 +103,11 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
             {language.createTaskText}
           </button>
           {attachments.map((attachment, index) => (
-            <div className="flex justify-start w-full text-start flex-col overflow-hidden p-2 border-gray-300 border-2 rounded drop-shadow my-2">
-              <div key={index} className="whitespace-nowrap flex justify-between w-full">
+            <div
+              key={index}
+              className="flex w-full text-start flex-col overflow-hidden p-2 border-gray-300 border-2 rounded drop-shadow my-2"
+            >
+              <div className="whitespace-nowrap flex justify-between w-full">
                 {attachment.name.length > 20 ? attachment.name.substring(0, 20) + "..." : attachment.name}
                 <span
                   className="ml-1 cursor-pointer"
@@ -114,7 +117,7 @@ const Tasks: React.FC<Props> = ({ userData, onNewTask, errorMsg }) => {
                     setAttachments(newAttachments);
                   }}
                 >
-                  ❌
+                  ✖
                 </span>
               </div>
             </div>
