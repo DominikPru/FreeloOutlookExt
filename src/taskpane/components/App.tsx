@@ -53,7 +53,7 @@ const App = () => {
   const getProjectData = async (email, apiKey) => {
     try {
       const response = await axios.get(
-        "https://corsproxy.io/?" + encodeURIComponent("https://api.freelo.io/v1/projects"),
+        https://api.freelo.io/v1/projects"),
         {
           auth: {
             username: email,
@@ -81,7 +81,7 @@ const App = () => {
   const getUserData = async (email: string, apiKey: string) => {
     try {
       const response: AxiosResponse = await axios.get(
-        "https://corsproxy.io/?" + encodeURIComponent("https://api.freelo.io/v1/users"),
+        https://api.freelo.io/v1/users"),
         {
           auth: {
             username: email,
@@ -106,7 +106,7 @@ const App = () => {
     try {
       console.log("Creating new project", projectName, projectCurrency);
       const response = await axios.post(
-        "https://corsproxy.io/?" + encodeURIComponent("https://api.freelo.io/v1/projects"),
+        https://api.freelo.io/v1/projects"),
         {
           name: projectName,
           currency_iso: projectCurrency,
